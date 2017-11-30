@@ -1,0 +1,42 @@
+---
+layout: default
+title: MagpieDuck.com
+---
+<div style="position:relative">
+  <div id="leftduck"></div>
+  <div id="lefthand"></div>
+</div>
+<p>Welcome to my website, I'm MagpieDuck (aka "Canardou" in french or "hit"). My real name is Olivier Hachette.</p>
+
+<p>I'm a french engineer in computer science and computer graphics, javascript enthusiast, game master in various role playing game and I make a lot of drawing. This website contains some finished or unfinished projects around these topics.</p>
+
+<p>I try to make most of the content of my website accessible in english, but some of the pages are still only in french waiting to be translated.</p>
+
+<div class="column">
+  {% for collection in site.collections %}
+    {% if collection.docs.size > 0 %}
+      {% assign name = collection.label %}
+      {% if name != "posts" %}
+        <section>
+          <a href="{{ collection.label }}"><h2>{{ collection.title }}</h2></a>
+          {{label}}
+          <ul>
+          {% for item in site[name] %}
+            <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+          {% endfor %}
+          </ul>
+        </section>
+      {% else %}
+        <section>
+          <a href="blog"><h2>{{ collection.title }}</h2></a>
+          {{label}}
+          <ul style="list-style: none;padding: 0;margin-left: 0;text-align: center;">
+          {% for item in site[name] limit:5 %}
+            <li><time>{{ item.date | date_to_string }}</time> <a href="{{ item.url }}">{{ item.title }}</a> </li>
+          {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+</div>

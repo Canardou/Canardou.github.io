@@ -1,0 +1,126 @@
+// The MIT License (MIT)
+//
+// Copyright (c) 2015-2017 Yegor Bugayenko
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+@media (max-width: $mobile-width) {
+  body {
+    padding: $em 0;
+  }
+  
+  header {
+    margin-bottom: 0.2 * $em;
+  }
+  
+  h1 {
+    margin-top: 0;
+  }
+
+  article {
+    border-radius: 0;
+    border: none;
+    padding: $em;
+  }
+
+  textarea,
+  input,
+  select {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  fieldset {
+    // The following line fixes fieldset overflow in webkit browsers.
+    // For further info see:
+    // http://stackoverflow.com/questions/17408815/fieldset-resizes-wrong-appears-to-have-unremovable-min-width-min-content/17863685#17863685
+    min-width: 0;
+
+    * {
+      flex-grow: 1;
+      page-break-before: auto;
+    }
+  }
+
+  section {
+    width: auto;
+  }
+
+  x:-moz-any-link {
+    // The following lines fixes fieldset overflow bug in Firefox browser.
+    // For further info, see:
+    // http://stackoverflow.com/questions/17408815/fieldset-resizes-wrong-appears-to-have-unremovable-min-width-min-content/17863685#17863685
+    // Changed the original `@-moz-document url-prefix` code to simpler
+    // `-moz-any-link` hack so W3C CSS validator will pass it.
+    display: table-cell;
+  }
+}
+
+
+@media (min-width: $screen-width) {
+  #leftduck{
+    position:absolute;
+    top: -8.5 * $em;
+    left: -11.5 * $em;
+    height:372px;
+    width:214px;
+    background-image:url("/images/magpieduck_left.png");
+    background-size:cover;
+    z-index:-1;
+  }
+  
+  #lefthand{
+    position:absolute;
+    top: -3.5 * $em;
+    left: -4 * $em;
+    height:93px;
+    width:140px;
+    background-image:url("/images/magpieduck_right_hand.png");
+    background-size:cover;
+    z-index:1;
+  }
+}
+
+/*@media (max-width: $screen-width - 1) and (min-width: $mobile-width + 1) {
+  #leftduck{
+    position:absolute;
+    top: -5.5 * $em;
+    left: -7 * $em;
+    height:186px;
+    width:107px;
+    background-image:url("/images/magpieduck_left.png");
+    background-size:cover;
+    z-index:-1;
+  }
+  
+  #lefthand{
+    position:absolute;
+    top: -3 * $em;
+    left: -3.5 * $em;
+    height:47px;
+    width:70px;
+    background-image:url("/images/magpieduck_right_hand.png");
+    background-size:cover;
+    z-index:1;
+  }
+  
+  header {
+    margin-bottom: 0.5 * $em;
+  }
+}*/
