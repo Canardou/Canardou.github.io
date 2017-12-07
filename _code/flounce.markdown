@@ -9,4 +9,4 @@ Flounce is a video-game prototype made with a mate in 3 months during my Erasmus
 <p style="text-align:center;font-weight: bold"><a href="http://flounce.herokuapp.com/">Play the game</a></p>
 
 You can also watch the trailer here :
-<iframe width="560" height="315" src="https://www.youtube.com/embed/NVCtYbKbPHE" frameborder="0" allowfullscreen></iframe>
+<iframe style="display:block;margin: auto" width="560" height="315" src="https://www.youtube.com/embed/NVCtYbKbPHE" frameborder="0" allowfullscreen></iframe>
