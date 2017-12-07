@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Real Time Rendering"
+date: 2017-10-01
 lang: eng
 ---
 <h2>Real Time Rendering Experiments</h2>

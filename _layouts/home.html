@@ -21,7 +21,8 @@ title: MagpieDuck.com
           <a href="{{ collection.label }}"><h2>{{ collection.title }}</h2></a>
           {{label}}
           <ul>
-          {% for item in site[name] %}
+          {% assign items = site[name] | sort: 'date' %}
+          {% for item in items reversed %}
             <li><a href="{{ item.url }}">{{ item.title }}</a></li>
           {% endfor %}
           </ul>
