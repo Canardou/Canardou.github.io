@@ -163,6 +163,10 @@ img {
   max-width: 100%;
 }
 
+aside>img{
+  padding: $em;
+}
+
 figure {
   img {
     display: block;

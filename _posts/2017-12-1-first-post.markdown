@@ -7,10 +7,14 @@ lang: eng
 ---
 <h2>Let's blog</h2>
 
-Hello, I'm MagpieDuck (aka "Canardou" in french or "hit"). My real name is Olivier Hachette.
+<h3>Why MagpieDuck ?</h3>
 
-I'm a french engineer in computer science and computer graphics, javascript enthusiast, game master in various role playing game and I make a lot of drawing. This website contains some finished or unfinished projects around these topics.
+<aside>
+	<img style="float:right" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/FemaleMagpieDuck.jpg/1024px-FemaleMagpieDuck.jpg" width="35%">
+</aside>
 
-I try to make most of the content of my website accessible in english, but some of the pages are still only in french waiting to be translated.
+I've always had a thing with ducks. They are king of funny to look at and I don't know why but as far as I remember lot of the creative things I did involved ducks at some point.
 
-See you around.
+I also love birds, and especially magpie, so when I discovered the magpieduck it was a revelation.
+
+Pic from [Wikipedia](https://en.wikipedia.org/wiki/Magpie_duck)
