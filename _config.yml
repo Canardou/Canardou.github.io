@@ -41,6 +41,9 @@ collections:
   rpg:
     output: true
     title: Role Playing
+  boardgame:
+    output: true
+    title: Boardgame
   posts:
     title: Blog Posts
 
