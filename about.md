@@ -8,9 +8,9 @@ permalink: /about.html
 <h3>Experience</h3>
 
 <img style="float:right;height:60px" src="/images/SII_logo.jpg">
-<strong>Permanent : Engineering consultant</strong>
+<strong>Permanent: Engineering consultant</strong>
 <ul>
-  <li>Sattelite simulation project support</li>
+  <li>Satellite  simulation project support</li>
   <li>Development and maintenance of Eclipse plugins</li>
   <li><em>Java, C++</em></li>
 </ul>
@@ -18,7 +18,7 @@ permalink: /about.html
 
 
 <img style="float:right;height:50px" src="/images/technicolor.png">
-<strong>Internship : Graphic benchmark for Set-Top-Box</strong>
+<strong>Internship: Graphic benchmark for Set-Top-Box</strong>
 <ul>
   <li>Cross compilation for Linux based Cortex ARM A9</li>
   <li>Graphic benchmark creation and development for OpeNGL or WebGL</li>
@@ -28,7 +28,7 @@ permalink: /about.html
 <em>2015 - Technicolor, Rennes, France</em>
 
 <img style="float:right;height:30px" src="/images/laas-cnrs.png">
-<strong>Internship : IMU Coding</strong>
+<strong>Internship: IMU Coding</strong>
 <ul>
   <li>Cross compilation for Real time linux based Cortex ARM v3</li>
   <li>Search for scientific articles, implementation on a Parrot drone</li>
@@ -56,7 +56,7 @@ One semester Erasmus in computer science<br>
 
 <h3>Hobbies</h3>
 
-Drawing, Climbing, Off-road cycling, Role-playing and Gameboards.
+Drawing, Climbing, Off-road cycling, Role-playing and Board games.
 
 <h3>Contact</h3>
 Fell free to contact me at magpieduck@yahoo.com
