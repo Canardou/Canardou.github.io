@@ -1,0 +1,391 @@
+---
+layout: post
+origin_url: "/code/animation.html"
+origin: "Animation"
+---
+<script id="vertexShader" type="x-shader/x-vertex">
+uniform vec4 uBonesQuatRotation[ BONES ];
+uniform vec4 uBonesQuatTranslat[ BONES ];
+uniform mat4 uBonesTransformation[ BONES ];
+uniform bool linear;
+
+varying vec3 vNormal;
+attribute vec2 bones;
+attribute vec2 weights;
+
+void main() {
+    if(bones[0] == 1.0)
+        vNormal = vec3(weights[0],0.0,weights[1]);
+    else if(bones[0] == 3.0)
+        vNormal = vec3(weights[1],0.0,weights[0]);
+    else
+        vNormal = vec3(0.0,weights[0],0.0);
+        
+    mat4 mv = projectionMatrix * 
+                modelViewMatrix;
+    
+    if(linear){
+        vec4 wPosition = vec4(0.0);
+        
+        for (int i = 0; i < 2; i++) {
+            wPosition += weights[i] * (
+                            uBonesTransformation[ int(bones[i]) ] *
+                            vec4( position, 1.0));
+        }
+        gl_Position =  mv * wPosition;
+    }
+    else{
+        vec4 wRotQuat = vec4(0.0);
+        vec4 wTransQuat = vec4(0.0);
+        for (int i = 0; i < 2; i++) {
+            float w = weights[i];
+            if( dot(uBonesQuatRotation[int(bones[i])], wRotQuat) < 0.0 )
+                w *= -1.0;
+            wRotQuat += uBonesQuatRotation[int(bones[i])] * w;
+            wTransQuat += uBonesQuatTranslat[int(bones[i])] * w;
+        }
+
+        float xRot = wRotQuat[0];
+        float yRot = wRotQuat[1];
+        float zRot = wRotQuat[2];
+        float wRot = wRotQuat[3];
+        
+        float length = sqrt(xRot * xRot + yRot * yRot
+        + zRot * zRot + wRot * wRot);
+        wRotQuat = wRotQuat / length;
+        wTransQuat = wTransQuat / length;
+        
+        float xR = wRotQuat[0];
+        float yR = wRotQuat[1];
+        float zR = wRotQuat[2];
+        float wR = wRotQuat[3];
+        float xT = wTransQuat[0];
+        float yT = wTransQuat[1];
+        float zT = wTransQuat[2];
+        float wT = wTransQuat[3];
+        
+        float t0 = 2.0 * (-wT * xR + xT * wR - yT * zR + zT * yR);
+        float t1 = 2.0 * (-wT * yR + xT * zR + yT * wR - zT * xR);
+        float t2 = 2.0 * (-wT * zR - xT * yR + yT * xR + zT * wR);
+        mat4 weightedJointMatrix = mat4(
+            1.0 - (2.0 * yR * yR) - (2.0 * zR * zR),
+            (2.0 * xR * yR) + (2.0 * wR * zR),
+            (2.0 * xR * zR) - (2.0 * wR * yR),
+            0,
+            (2.0 * xR * yR) - (2.0 * wR * zR),
+            1.0 - (2.0 * xR * xR) - (2.0 * zR * zR),
+            (2.0 * yR * zR) + (2.0 * wR * xR),
+            0,
+            (2.0 * xR * zR) + (2.0 * wR * yR),
+            (2.0 * yR * zR) - (2.0 * wR * xR),
+            1.0 - (2.0 * xR * xR) - (2.0 * yR * yR),
+            0,
+            t0,
+            t1,
+            t2,
+            1
+            );
+        
+        gl_Position =  mv * weightedJointMatrix * vec4( position, 1.0);
+    }
+}
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+varying vec3 vNormal;
+
+void main() {
+    gl_FragColor = vec4(vNormal.x*.5+.5,vNormal.y*.5+.5,vNormal.z*.5+.5,1.0);
+}
+</script>
+<script src="scripts/three.min.js"></script>
+<script src="scripts/trackball.js"></script>
+<script src="scripts/bones.js"></script>
+	<a href="index.html"><< Retour</a>
+    <h1>Exemple interactif</h1>
+    Area of influence <input type=range min=2.5 max=15 step=0.5 onchange="changeArea(this.value)" value="8"><span id=value>8</span><br>
+    <input type="radio" id="linear" name="blending" value="linear" onchange="material.uniforms.linear.value=true;" checked><label for="linear">Linear</label> - <input type="radio" id="dual" name="blending" value="dual" onchange="material.uniforms.linear.value=false;"><label for="dual">Dual</label>
+    <br><label><input type="checkbox" autocomplete=off checked=true onchange="setVisibleBones(this.checked)" name="bones" value="bones">Visible Bones</label>
+    <label><input type="checkbox" autocomplete=off onchange="material.wireframe = this.checked" name="rotationYC" value="rotationYC">Wireframe</label>
+    <br><label><input type="checkbox" autocomplete=off checked=true onchange="rotation_base = this.checked" name="rotationY" value="rotationY">Rotation Parent</label>
+    <label><input type="checkbox" autocomplete=off checked=true onchange="rotation_child = this.checked" name="rotationYC" value="rotationYC">Rotation Child</label>
+    <label><input type="checkbox" autocomplete=off onchange="translation_child = this.checked" name="rotationYC" value="rotationYC">Translation Child</label>
+    <label><input type="checkbox" autocomplete=off onchange="torsion_child = this.checked" name="rotationYC" value="rotationYC">Torsion Child</label>
+    <div id="scene"></div>
+    Vertex Shader : 
+    <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">uniform vec4 uBonesQuatRotation[ BONES ];
+uniform vec4 uBonesQuatTranslat[ BONES ];
+uniform mat4 uBonesTransformation[ BONES ];
+uniform <span style="color: #333399; font-weight: bold">bool</span> linear;
+
+varying vec3 vNormal;
+attribute vec2 bones;
+attribute vec2 weights;
+
+<span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">main</span>() {
+<span style="color: #008800; font-weight: bold">if</span>(bones[<span style="color: #0000DD; font-weight: bold">0</span>] <span style="color: #333333">==</span> <span style="color: #6600EE; font-weight: bold">1.0</span>)
+    vNormal <span style="color: #333333">=</span> vec3(weights[<span style="color: #0000DD; font-weight: bold">0</span>],<span style="color: #6600EE; font-weight: bold">0.0</span>,weights[<span style="color: #0000DD; font-weight: bold">1</span>]);
+<span style="color: #008800; font-weight: bold">else</span> <span style="color: #008800; font-weight: bold">if</span>(bones[<span style="color: #0000DD; font-weight: bold">0</span>] <span style="color: #333333">==</span> <span style="color: #6600EE; font-weight: bold">3.0</span>)
+    vNormal <span style="color: #333333">=</span> vec3(weights[<span style="color: #0000DD; font-weight: bold">1</span>],<span style="color: #6600EE; font-weight: bold">0.0</span>,weights[<span style="color: #0000DD; font-weight: bold">0</span>]);
+<span style="color: #008800; font-weight: bold">else</span>
+    vNormal <span style="color: #333333">=</span> vec3(<span style="color: #6600EE; font-weight: bold">0.0</span>,weights[<span style="color: #0000DD; font-weight: bold">0</span>],<span style="color: #6600EE; font-weight: bold">0.0</span>);
+    
+mat4 mv <span style="color: #333333">=</span> projectionMatrix <span style="color: #333333">*</span> 
+            modelViewMatrix;
+
+<span style="color: #008800; font-weight: bold">if</span>(linear){
+    vec4 wPosition <span style="color: #333333">=</span> vec4(<span style="color: #6600EE; font-weight: bold">0.0</span>);
+    
+    <span style="color: #008800; font-weight: bold">for</span> (<span style="color: #333399; font-weight: bold">int</span> i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> <span style="color: #0000DD; font-weight: bold">2</span>; i<span style="color: #333333">++</span>) {
+        wPosition <span style="color: #333333">+=</span> weights[i] <span style="color: #333333">*</span> (
+                        uBonesTransformation[ <span style="color: #333399; font-weight: bold">int</span>(bones[i]) ] <span style="color: #333333">*</span>
+                        vec4( position, <span style="color: #6600EE; font-weight: bold">1.0</span>));
+    }
+    gl_Position <span style="color: #333333">=</span>  mv <span style="color: #333333">*</span> wPosition;
+}
+<span style="color: #008800; font-weight: bold">else</span>{
+    vec4 wRotQuat <span style="color: #333333">=</span> vec4(<span style="color: #6600EE; font-weight: bold">0.0</span>);
+    vec4 wTransQuat <span style="color: #333333">=</span> vec4(<span style="color: #6600EE; font-weight: bold">0.0</span>);
+    <span style="color: #008800; font-weight: bold">for</span> (<span style="color: #333399; font-weight: bold">int</span> i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> <span style="color: #0000DD; font-weight: bold">2</span>; i<span style="color: #333333">++</span>) {
+        <span style="color: #333399; font-weight: bold">float</span> w <span style="color: #333333">=</span> weights[i];
+        <span style="color: #008800; font-weight: bold">if</span>( dot(uBonesQuatRotation[<span style="color: #333399; font-weight: bold">int</span>(bones[i])], wRotQuat) <span style="color: #333333">&lt;</span> <span style="color: #6600EE; font-weight: bold">0.0</span> )
+            w <span style="color: #333333">*=</span> <span style="color: #333333">-</span><span style="color: #6600EE; font-weight: bold">1.0</span>;
+        wRotQuat <span style="color: #333333">+=</span> uBonesQuatRotation[<span style="color: #333399; font-weight: bold">int</span>(bones[i])] <span style="color: #333333">*</span> w;
+        wTransQuat <span style="color: #333333">+=</span> uBonesQuatTranslat[<span style="color: #333399; font-weight: bold">int</span>(bones[i])] <span style="color: #333333">*</span> w;
+    }
+
+    <span style="color: #333399; font-weight: bold">float</span> xRot <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">0</span>];
+    <span style="color: #333399; font-weight: bold">float</span> yRot <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">1</span>];
+    <span style="color: #333399; font-weight: bold">float</span> zRot <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">2</span>];
+    <span style="color: #333399; font-weight: bold">float</span> wRot <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">3</span>];
+    
+    <span style="color: #333399; font-weight: bold">float</span> length <span style="color: #333333">=</span> sqrt(xRot <span style="color: #333333">*</span> xRot <span style="color: #333333">+</span> yRot <span style="color: #333333">*</span> yRot
+    <span style="color: #333333">+</span> zRot <span style="color: #333333">*</span> zRot <span style="color: #333333">+</span> wRot <span style="color: #333333">*</span> wRot);
+    wRotQuat <span style="color: #333333">=</span> wRotQuat <span style="color: #333333">/</span> length;
+    wTransQuat <span style="color: #333333">=</span> wTransQuat <span style="color: #333333">/</span> length;
+    
+    <span style="color: #333399; font-weight: bold">float</span> xR <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">0</span>];
+    <span style="color: #333399; font-weight: bold">float</span> yR <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">1</span>];
+    <span style="color: #333399; font-weight: bold">float</span> zR <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">2</span>];
+    <span style="color: #333399; font-weight: bold">float</span> wR <span style="color: #333333">=</span> wRotQuat[<span style="color: #0000DD; font-weight: bold">3</span>];
+    <span style="color: #333399; font-weight: bold">float</span> xT <span style="color: #333333">=</span> wTransQuat[<span style="color: #0000DD; font-weight: bold">0</span>];
+    <span style="color: #333399; font-weight: bold">float</span> yT <span style="color: #333333">=</span> wTransQuat[<span style="color: #0000DD; font-weight: bold">1</span>];
+    <span style="color: #333399; font-weight: bold">float</span> zT <span style="color: #333333">=</span> wTransQuat[<span style="color: #0000DD; font-weight: bold">2</span>];
+    <span style="color: #333399; font-weight: bold">float</span> wT <span style="color: #333333">=</span> wTransQuat[<span style="color: #0000DD; font-weight: bold">3</span>];
+    
+    <span style="color: #333399; font-weight: bold">float</span> t0 <span style="color: #333333">=</span> <span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> (<span style="color: #333333">-</span>wT <span style="color: #333333">*</span> xR <span style="color: #333333">+</span> xT <span style="color: #333333">*</span> wR <span style="color: #333333">-</span> yT <span style="color: #333333">*</span> zR <span style="color: #333333">+</span> zT <span style="color: #333333">*</span> yR);
+    <span style="color: #333399; font-weight: bold">float</span> t1 <span style="color: #333333">=</span> <span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> (<span style="color: #333333">-</span>wT <span style="color: #333333">*</span> yR <span style="color: #333333">+</span> xT <span style="color: #333333">*</span> zR <span style="color: #333333">+</span> yT <span style="color: #333333">*</span> wR <span style="color: #333333">-</span> zT <span style="color: #333333">*</span> xR);
+    <span style="color: #333399; font-weight: bold">float</span> t2 <span style="color: #333333">=</span> <span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> (<span style="color: #333333">-</span>wT <span style="color: #333333">*</span> zR <span style="color: #333333">-</span> xT <span style="color: #333333">*</span> yR <span style="color: #333333">+</span> yT <span style="color: #333333">*</span> xR <span style="color: #333333">+</span> zT <span style="color: #333333">*</span> wR);
+    mat4 weightedJointMatrix <span style="color: #333333">=</span> mat4(
+        <span style="color: #6600EE; font-weight: bold">1.0</span> <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> yR <span style="color: #333333">*</span> yR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> zR <span style="color: #333333">*</span> zR),
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> yR) <span style="color: #333333">+</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> zR),
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> zR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> yR),
+        <span style="color: #0000DD; font-weight: bold">0</span>,
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> yR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> zR),
+        <span style="color: #6600EE; font-weight: bold">1.0</span> <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> xR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> zR <span style="color: #333333">*</span> zR),
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> yR <span style="color: #333333">*</span> zR) <span style="color: #333333">+</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> xR),
+        <span style="color: #0000DD; font-weight: bold">0</span>,
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> zR) <span style="color: #333333">+</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> yR),
+        (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> yR <span style="color: #333333">*</span> zR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> wR <span style="color: #333333">*</span> xR),
+        <span style="color: #6600EE; font-weight: bold">1.0</span> <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> xR <span style="color: #333333">*</span> xR) <span style="color: #333333">-</span> (<span style="color: #6600EE; font-weight: bold">2.0</span> <span style="color: #333333">*</span> yR <span style="color: #333333">*</span> yR),
+        <span style="color: #0000DD; font-weight: bold">0</span>,
+        t0,
+        t1,
+        t2,
+        <span style="color: #0000DD; font-weight: bold">1</span>
+        );
+    
+    gl_Position <span style="color: #333333">=</span>  mv <span style="color: #333333">*</span> weightedJointMatrix <span style="color: #333333">*</span> vec4( position, <span style="color: #6600EE; font-weight: bold">1.0</span>);
+}
+}
+</pre></div>
+<script>
+    /*global THREE*/
+    var visible = true;
+    var rotation_base = true;
+    var rotation_child = true;
+    var translation_child = false;
+    var torsion_child = false;
+    
+    var area = 2.5;
+    function changeArea(value){
+        bufferGeometry = new THREE.BoxBufferGeometry( 1, 10, 1, 5, 20, 5 );
+        bonesScene.remove(bone_2.arrow);
+        bonesScene.remove(bone_3.arrow);
+        scene.remove(bone_1.sphere);
+        scene.remove(bone_3.sphere);
+        area = value;
+        bone_1.setRadius(area);
+        bone_3.setRadius(area);
+        initTransformations(bonesGeometry, uBonesQuatRotation, uBonesQuatTranslat, uBonesTransformation);
+        material = new THREE.ShaderMaterial({
+            defines: {
+            	BONES: bonesGeometry.length
+            },
+            uniforms: {
+                uBonesQuatRotation: { type: "v4v", value: uBonesQuatRotation },
+                uBonesQuatTranslat: { type: "v4v", value: uBonesQuatTranslat },
+                uBonesTransformation: { type: "m4v", value: uBonesTransformation },
+                linear: { value:material.uniforms.linear.value }
+            },
+        	vertexShader: document.getElementById( 'vertexShader' ).textContent,
+        	fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+        });
+        
+        vertices = bufferGeometry.attributes.position;
+        bonesWeights = getBonesWeights(bonesGeometry, vertices);
+        bones = bonesWeights.bones;
+        weights = bonesWeights.weights;
+        
+        // itemSize = 3 because there are 3 values (components) per vertex
+        bufferGeometry.addAttribute( 'weights', new THREE.BufferAttribute( weights, 2) );
+        bufferGeometry.addAttribute( 'bones', new THREE.BufferAttribute( bones, 2) );
+        scene.remove(mesh);
+        
+        mesh = new THREE.Mesh( bufferGeometry, material );
+        scene.add(mesh);
+        setVisibleBones(visible);
+        document.getElementById("value").innerHTML = area;
+    }
+    
+    var bufferGeometry = new THREE.BoxBufferGeometry( 1, 10, 1, 5, 20, 5 );
+
+    var scene = new THREE.Scene();
+    var bonesScene = new THREE.Scene();
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.autoClear = false;
+
+    renderer.setSize(700, 400);
+    
+    var domElem = document.getElementById("scene").appendChild(renderer.domElement);
+    
+    var camera = new THREE.PerspectiveCamera(40, 700 / 400, 0.1, 15000);
+    camera.position.set(0, 0, 40);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    
+    var bonesGeometry = [];
+    var base_bone = new Bone(0,0,0,0,null,0xffff00);
+    var bone_1 = new Bone(0,5.1,0,8,base_bone,0xff0000);
+    var bone_2 = new Bone(0,0,0,0,bone_1,0x00ff00);
+    var bone_3 = new Bone(0,-5.1,0,8,bone_2,0x0000ff);
+
+    bonesGeometry.push(base_bone);
+    bonesGeometry.push(bone_1);
+    bonesGeometry.push(bone_2);
+    bonesGeometry.push(bone_3);
+    
+    bonesScene.add(bone_2.arrow);
+    bonesScene.add(bone_3.arrow);
+    
+    scene.add(bone_1.sphere);
+    scene.add(bone_3.sphere);
+    
+    function setVisibleBones(b){
+        visible = b;
+        if(!b){
+            bonesScene.remove(bone_2.arrow);
+            bonesScene.remove(bone_3.arrow);
+            scene.remove(bone_1.sphere);
+            scene.remove(bone_3.sphere);
+        }
+        else{
+            bonesScene.add(bone_2.arrow);
+            bonesScene.add(bone_3.arrow);
+            scene.add(bone_1.sphere);
+            scene.add(bone_3.sphere);
+        }
+    }
+    
+    
+    var uBonesQuatRotation = [];
+    var uBonesQuatTranslat = [];
+    var uBonesTransformation = [];
+    initTransformations(bonesGeometry, uBonesQuatRotation, uBonesQuatTranslat, uBonesTransformation);
+
+    var material = new THREE.ShaderMaterial({
+        defines: {
+        	BONES: bonesGeometry.length
+        },
+        uniforms: {
+            uBonesQuatRotation: { type: "v4v", value: uBonesQuatRotation },
+            uBonesQuatTranslat: { type: "v4v", value: uBonesQuatTranslat },
+            uBonesTransformation: { type: "m4v", value: uBonesTransformation },
+            linear: { value:true },
+        },
+    	vertexShader: document.getElementById( 'vertexShader' ).textContent,
+    	fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+    });
+    
+    var vertices = bufferGeometry.attributes.position;
+    var bonesWeights = getBonesWeights(bonesGeometry, vertices);
+    var bones = bonesWeights.bones;
+    var weights = bonesWeights.weights;
+    
+    // itemSize = 3 because there are 3 values (components) per vertex
+    bufferGeometry.addAttribute( 'weights', new THREE.BufferAttribute( weights, 2) );
+    bufferGeometry.addAttribute( 'bones', new THREE.BufferAttribute( bones, 2) );
+    
+    var mesh = new THREE.Mesh( bufferGeometry, material );
+    
+    scene.add(mesh);
+    //scene.add(wireframe);
+        
+    var camControls = new THREE.TrackballControls( camera, domElem );
+	camControls.rotateSpeed = 5.0;
+	camControls.zoomSpeed = 1.2;
+	camControls.panSpeed = 0.8;
+	camControls.noZoom = false;
+	camControls.noPan = false;
+	camControls.staticMoving = true;
+	camControls.dynamicDampingFactor = 0.3;
+	camControls.keys = [ 65, 83, 68 ];
+	camControls.addEventListener( 'change', render );
+    
+    var clock = new THREE.Clock();
+    var rota1 = 0;
+    var rota2 = 0;
+    
+    (function animloop(){
+      requestAnimationFrame(animloop);
+      camControls.update(clock.getDelta());
+      
+        for(var k = 0; k < bonesGeometry.length; k++){
+            var transfo = bonesGeometry[k].getTransformation();
+            uBonesTransformation[k] = transfo;
+            var dual = mat2dual(transfo);
+            uBonesQuatRotation[k] = dual.rotation;
+            uBonesQuatTranslat[k] = dual.translation;
+        }
+      
+      render();
+      var t = clock.getElapsedTime();
+      
+      if(rotation_base)
+        bonesGeometry[1].transformation.makeRotationZ(t-rota1);
+      else{
+        bonesGeometry[1].transformation.makeRotationZ(0);
+        rota1 = t;
+      }
+        
+      if(rotation_child)
+        bonesGeometry[2].transformation.makeRotationZ(t-rota2);
+      else {
+        bonesGeometry[2].transformation.makeRotationZ(0);
+        rota2 = t;
+      }
+      
+      if(torsion_child)
+        bonesGeometry[2].transformation.multiply(new THREE.Matrix4().makeRotationY(t));
+        
+      if(translation_child)
+        bonesGeometry[2].transformation.multiply(new THREE.Matrix4().makeTranslation(Math.cos(t)*5,0,0));
+      
+    })();
+    
+    function render(){
+        renderer.clear();
+		renderer.render( scene, camera );
+		renderer.clearDepth();
+		renderer.render( bonesScene, camera );
+    }
+</script>
