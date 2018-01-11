@@ -63,6 +63,7 @@ address {
 }
 
 section {
+  break-inside: avoid-column;
   break-inside: avoid;
   margin-left: auto;
   margin-right: auto;
