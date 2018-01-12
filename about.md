@@ -8,11 +8,11 @@ permalink: /about.html
 <h3>Experience</h3>
 
 <img style="float:right;height:60px" src="/images/SII_logo.jpg">
-<strong>Permanent: Engineering consultant</strong>
+<strong>Permanent: Engineering consultant for Airbus D&S</strong>
 <ul>
   <li>Satellite  simulation project support</li>
   <li>Development and maintenance of Eclipse plugins</li>
-  <li><em>Java, C++</em></li>
+  <li><em>Java, Java RCP, C++</em></li>
 </ul>
 <em>2015-2017 - SII, Toulouse, France</em>
 
