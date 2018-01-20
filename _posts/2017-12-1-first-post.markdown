@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Creation of MagpieDuck.com"
+title:  "Let's blog"
 date:   2017-12-01
 categories: blog
 lang: eng
