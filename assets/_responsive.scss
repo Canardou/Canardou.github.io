@@ -23,7 +23,7 @@
 @media (max-width: $mobile-width) {
   #leftduck{
     position:absolute;
-    top: -5 * $em;
+    top: -3.75 * $em;
     left: -1 * $em;
     height:80px;
     width:100px;
@@ -33,15 +33,16 @@
   }
   
   body {
-    padding: $em 0;
+    padding: 0 0;
   }
   
   header {
-    margin-bottom: 0.2 * $em;
+    margin-bottom: 0;
   }
   
   h1 {
-    margin-top: 0;
+    margin-top: 0.7 * $em;
+    margin-bottom: 0.2 * $em;
     margin-left: 100px;
     font-size: 1.5 * $em;
   }
@@ -49,6 +50,7 @@
   article {
     border-radius: 0;
     border: none;
+    border-top: .1 * $em solid $color1;;
     padding: $em;
   }
 
@@ -89,7 +91,7 @@
 @media (min-width: $screen-width) {
   #leftduck{
     position:absolute;
-    top: -8.5 * $em;
+    top: -8 * $em;
     left: -11.5 * $em;
     height:372px;
     width:214px;
@@ -113,10 +115,10 @@
 @media (max-width: $screen-width - 1) and (min-width: $mobile-width + 1) {
   #leftduck{
     position:absolute;
-    top: -8 * $em;
+    top: -7.5 * $em;
     left: -5 * $em;
-    height:154px;
-    width:190px;
+    height:146px;
+    width:180px;
     background-image:url("/images/magpieduck_small.png");
     background-size:cover;
     z-index:1;

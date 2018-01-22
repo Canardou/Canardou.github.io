@@ -46,6 +46,7 @@ h2 {
   color: $black;
   background-color: $color2d;
   text-align: center;
+  border-radius: .2 * $em;
 }
 
 h3 {
@@ -57,6 +58,7 @@ h3 {
   background-color: $color1l;
   color: $black;
   margin-bottom: $em;
+  border-radius: .2 * $em;
 }
 
 h4 {

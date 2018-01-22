@@ -74,22 +74,22 @@ label {
 input[type="submit"],
 input[type="reset"],
 button {
-  background: darken($white, 5);
+  background: $color1l;
   color: lighten($black, 10);
   cursor: pointer;
   display: inline;
-  margin-bottom: $em;
-  margin-right: .4 * $em;
-  padding: .3625 * $em 1.3 * $em;
+  margin-bottom: .5 * $em;
+  margin-right: .1 * $em;
+  padding: .1 * $em .3 * $em;
   text-align: center;
 
   &:hover {
-    background: darken($white, 15);
+    background: $color2d;
     color: $black;
   }
 
   &[disabled] {
-    background: darken($white, 10);
+    background: $color2d;
     color: lighten($black, 10);
     cursor: not-allowed;
   }
