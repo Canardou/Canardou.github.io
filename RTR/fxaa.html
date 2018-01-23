@@ -45,7 +45,7 @@ void main() {
       <option value="6">FXAA_DEBUG_LOWPASS</option>
       <option value="8">FXAA_DEBUG_LUMA</option>
     </select>
-    <label><input type="checkbox" autocomplete=off checked=true onchange="setFxaa(this.checked)" name="fxaa" value="fxaa">FXAA</label><br>
+    <input type="checkbox" autocomplete=off checked=true onchange="setFxaa(this.checked)" id="fxaa" value="fxaa"><label for="fxaa">FXAA</label><br>
     <div id="scene"></div>
     Fragment shader : (<a href="http://blog.simonrodriguez.fr/articles/30-07-2016_implementing_fxaa.html">http://blog.simonrodriguez.fr/articles/30-07-2016_implementing_fxaa.html</a>)<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">uniform <span style="color: #333399; font-weight: bold">int</span> byp;
 uniform sampler2D screenTexture;

@@ -106,7 +106,7 @@ void main() {
 <script src="scripts/bones.js"></script>
 <h1>Marvin</h1>
 <input type="radio" id="linear" name="blending" value="linear" onchange="material.uniforms.linear.value=true;" checked><label for="linear">Linear</label> - <input type="radio" id="dual" name="blending" value="dual" onchange="material.uniforms.linear.value=false;"><label for="dual">Dual</label>
-<label><input type="checkbox" autocomplete=off checked=true onchange="setVisibleBones(this.checked)" name="bones" value="bones">Visible Bones</label>
+<input type="checkbox" autocomplete=off checked=true onchange="setVisibleBones(this.checked)" id="bones" value="bones"><label for="bones">Visible Bones</label>
 <div id="scene"></div>
 </article></section>
 <script>
