@@ -165,6 +165,9 @@ input[type="checkbox"] {
 
   // Box.
   & + label:before {
+    @media print {
+      border: 1px solid $black;
+    }
     border-radius: .2 * $em;
     content: '';
     margin-right: 0.5 * $em;
@@ -210,8 +213,8 @@ input[type="checkbox"] {
     left: 0.75 * $em;
     top: 9px;
     background: $black;
-    width: 2px;
-    height: 2px;
+    width: 3px;
+    height: 3px;
     box-shadow: 
       2px 0 0 $black,
       4px 0 0 $black,
@@ -235,6 +238,10 @@ input[type="radio"] {
 
   // Box.
   & + label:before {
+    @media print {
+      border: 1px solid $black;
+      border-radius: .5 * $em;
+    }
     border-radius: .5 * $em;
     content: '';
     margin-right: 0.5 * $em;

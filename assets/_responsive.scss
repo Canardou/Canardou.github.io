@@ -50,7 +50,10 @@
   article {
     border-radius: 0;
     border: none;
-    border-top: .1 * $em solid $color1;;
+    @media screen {
+      border-top: .1 * $em solid $color1;
+      border-bottom: .1 * $em solid $color1;
+    }
     padding: $em;
   }
 
