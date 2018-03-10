@@ -7,8 +7,15 @@ permalink: /about.html
 
 <h3>Experience</h3>
 
-<img style="float:right;height:60px" src="/images/SII_logo.jpg">
-<strong>Permanent: Engineering consultant for Airbus D&S</strong>
+<img style="float:right;height:60px" src="/images/irit.png">
+<strong>Internship: Automatic reconstruction of a jointed model</strong>
+<ul>
+  <li>Improve robustness and automation of the process</li>
+</ul>
+<em>2018 - IRIT, Toulouse, France</em>
+
+<img style="float:right;height:50px" src="/images/SII_logo.jpg">
+<strong>Permanent contract: Engineering consultant for Airbus D&S</strong>
 <ul>
   <li>Satellite  simulation project support</li>
   <li>Development and maintenance of Eclipse plugins</li>
@@ -31,7 +38,7 @@ permalink: /about.html
 <strong>Internship: IMU Coding</strong>
 <ul>
   <li>Cross compilation for Real time linux based Cortex ARM v3</li>
-  <li>Search for scientific articles, implementation on a Parrot drone</li>
+  <li>State of the art, implementation on a Parrot drone</li>
   <li>Coding of an AHRS</li>
   <li><em>C++</em></li>
 </ul>

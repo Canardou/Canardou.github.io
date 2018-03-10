@@ -42,9 +42,12 @@ html {
 }
 
 body {
-  background: $whited;
+  background: $color2;
   color: $black;
   padding: 1 * $em;
+  background-image:url("../images/3025586.jpg");
+  background-size:cover;
+  background-repeat:no-repeat;
 }
 
 p,

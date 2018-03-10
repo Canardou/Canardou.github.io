@@ -25,7 +25,7 @@ $em: 20px;
 
 // fonts
 $serif: Georgia, serif;
-$sans-serif: Helvetica, Arial, sans-serif;
+$sans-serif: "Droid Sans", Helvetica, Arial, sans-serif;
 $monospace: Menlo, Monaco, Consolas, 'Courier New', monospace;
 
 // colors
@@ -37,7 +37,7 @@ $whited: darken($white,15);
 $color1: #3B424A;
 $color1l: lighten($color1,15);
 $color1d: darken($color1,15);
-$color2: #F7CA18;
+$color2: #FCD242;
 $color2l: lighten($color2, 10);
 $color2d: darken($color2, 5);
 $color3: #1D53A3;
