@@ -16,10 +16,10 @@
 title: MagpieDuck
 email: magpieduck@yahoo.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Personnal website of Olivier Hachette, also known as MagpieDuck
+  Personnal website of Olivier Hachette, also known as MagpieDuck, 
   Engineer in computer science and computer graphics
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "www.magpieduck.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "http://www.magpieduck.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: Canardou
 
 # Build settings
@@ -41,9 +41,9 @@ collections:
   rpg:
     output: true
     title: Role Playing
-  boardgame:
+  projects:
     output: true
-    title: Boardgame
+    title: Projects
   posts:
     title: Blog Posts
 

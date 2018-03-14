@@ -10,6 +10,7 @@ permalink: /about.html
 <img style="float:right;height:60px" src="/images/irit.png">
 <strong>Internship: Automatic reconstruction of a jointed model</strong>
 <ul>
+  <li>State of the art of implicit surfaces for animation purposes</li>
   <li>Improve robustness and automation of the process</li>
 </ul>
 <em>2018 - IRIT, Toulouse, France</em>
@@ -53,7 +54,7 @@ Engineer's degree in critical embedded systems<br>
 
 <img style="float:right;height:60px" src="/images/ups.jpg">
 <strong>Université Paul Sabatier</strong><br>
-Master of computer graphics and image analysis<br>
+Master's degree of computer graphics and image analysis<br>
 <em>2018 - Toulouse, France</em>
 
 <img style="float:right;height:60px" src="/images/linkoping.png">

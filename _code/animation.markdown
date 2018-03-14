@@ -5,64 +5,70 @@ date: 2018-01-09
 lang: eng
 ---
 <h2>Animation</h2>
-Tous les projets utilisent THREE.js comme librairie pour la gestion de la géométrie et du rendu.
+These experiments were made with THREE.js for the rendering course at the University Paul Sabatier in 2017.
 
-<h3>Squelette</h3>
-Comme cela est le but du TP, la gestion du squelette est effectuée à l'aide d'un classe personnalisée de "Bones". En effet il existe déjà une gestion du squelette dans THREE.js.
+<h3>Skeleton</h3>
+We handle bones with a custom class even if THREE.js already provides one.
 
-Nos spécifications sont telles que :
+Our requirements for a bone are:
 <ol>
-	<li>Un os dispose d'une zone d'influence sphérique, son influence décroit avec la distance</li>
-	<li>Les os sont organisés selon une hiérarchie, chaque os dispose d'un parent sauf l'os initial</li>
-	<li>Un vertex ne peut être influencé par au moins deux os</li>
-	<li>Les os doivent disposer d'une interface de débug (affichage de la zone d'influence et du parent)</li>
+	<li>A bone has a sphere of influence and it decreases with the distance</li>
+	<li>Hierarchical bones, each one has a parent except the first one</li>
+	<li>A vertex can be affected by two bones</li>
+	<li>A debug interface should be provided to show area of influence and parent of a bone</li>
 </ol>
 
-Finalement notre os peut être appelé avec un constructeur assez simple qui prends en entrée une position x,y,z, un rayon d'influence en son centre, son parent et une couleur pour le debug.
+Finally, a constructor can be called to create our bone. It takes in entry the position, the radius of the sphere of influence, its parent and a color for debug purposes.
 
-On notera que du fait que l'influence est calculée automatiquement, on doit passer par deux structures d'os pour avoir un comportement plus simple d'animation, un premier os sert de rotule tandis qu'un second (enfant du premier) génère l'air d'influence à un certaine distance. Dans la figure 1, on peut voir que l'os en vert n'a pas de zone d'influence dans ce but, il y a 3 os dans cet exemple, le rouge, le vert et le bleu.
+Because of the implementation and automation of the computing of the area of influence, if one would want to have a more classical bone API, they would have to create two bones.
+The first one would be the kneecap and the second the area of influence at a fixed distance. The simple example Figure 1, uses this hierachy with 3 bones created and two visible in debug.
 
 <figure id="figure1">
 	<img src="/Animation/images/bones_example.png" width="65%">
-	<figcaption>Figure 1 : Exemple simple</figcaption>
+	<figcaption>Figure 1 : Simple example</figcaption>
 </figure>
 
-<h3>Matrice de rotation et Quaternion</h3>
+<h3>Rotation matrix and Quaternion</h3>
 
-Comme JavaScript est plutôt lent, on implémente immédiatement la gestion du blending à l'aide du GPU. Le shader peut être lu dans l'exemple en lien à la fin de cette partie.
+JavaScript is not really fast, so we immediately move calculation for blending onto the GPU. The code of the shader is exposed in the example at the end of this section.
 
-Il existe deux façons de représenter les rotations et les translations, par des matrices de rotations 4x4 ou par des duals quaternions. Les deux méthodes ont leurs avantages et leurs défauts. Dans les deux nous mettons en place un linear blending avec au maximum deux os (il est possible d'en avoir plus avec le code fourni mais cela génère des résultats peu esthétiques).
+We implement two way of representing rotations and transaltions, with rotation matrices and with dual quaternions.
+Both methods have their advantages and flaws.
+A linear blending is then applied with two bones (in our case, up to four could be handled but it generated uneasthetic results).
 
-Dans le cas d'une interpolation par matrice de rotation, on peut voir apparaître un écrasement au niveau du point de rotation. Cela donne l'impression qu'on pli une paille (Figure 2) et peut poser problème pour l'animation des membres de personnages un peu épais.
+Rotation matrix blending creates a crushing at the point of rotation.
+It is like a folded straw Figure 2, and can be problematic when animating character with large limbs.
 
 <figure id="figure2">
 	<img src="/Animation/images/matrix.png" width="35%">
-	<figcaption>Figure 2 : Interpolation linéaire avec matrices de rotations</figcaption>
+	<figcaption>Figure 2 : Linear interpolation with rotation matrices</figcaption>
 </figure>
 
-Dans le cas d'une interpolation via les duals quaternions, on voir apparaitre un coude au niveau du point de rotation (Figure 3).
+Dual quaternions blending creates a bulge around the point of rotation as shown on Figure 3.
 
 <figure id="figure3">
 	<img src="/Animation/images/quat.png" width="35%">
-	<figcaption>Figure 3 : Interpolation linéaire avec dual quaternions</figcaption>
+	<figcaption>Figure 3 : Linear interpolation with dual quaternions</figcaption>
 </figure>
 
-L'intérêt principal de du linear blending en utilisant des dual quaternions repose sur la gestion de la torsion, en effet alors que pour des matrices de rotation on a un amincissement du volume lors d'une torsion il n'y a rien de tel pour les dual quaternions où la surface s'enroule naturellement autour de l'axe de torsion. (Figure 4)
+One of the main advantage of the duals quaternions linear blending is the handling of wringing.
+Whereas for rotation matrices we can spot a thinning of the volume during wringin, there is nothing like it with dual quaternions and the surface naturally roll up around the axis of rotation  as shown in Figure 4.
 
 <figure id="figure4">
 	<img src="/Animation/images/dual_torsion.png" width="45%">
-	<figcaption>Figure 4 : Différence pour une torsion entre dual linear blending<br>(Pavé avec interpolation de matrices, puis de dual quaternions et Cylindre idem)</figcaption>
+	<figcaption>Figure 4 : Comparison of a wringing between our two implementations<br>(Cuboid and cylinder with linear blending of matrices and dual quaternions)</figcaption>
 </figure>
 
-Toutes ces configurations peuvent être reproduites sur l'exemple en ligne suivant : <a href="/Animation/simple.html">Voir l'exemple interactif</a>
+All these configurations can be reproduced on the online example : <a href="/Animation/simple.html">Interactive example</a>
 
-<h3>Exemple d'animation avec un squelette hiérarchique</h3>
+<h3>Use case of animating a character with a hierarchical skeleton</h3>
 
-On met en place un squelette hiérarchique  pour animer "Marvin" notre cobaye. On utilise pour cela la position "rest" de notre modèle pour choisir la position des bones et leur aire d'influence (Figure 5). On anime ensuite à l'aide de transformation de type rotation seulement pour ne pas distendre le modèle.
+We set up a hierarchical skeleton in order to animate "Marvin" our character. We use the rest position to place and create bones thanks to the debug mode Figure 5.
+We can then animate thanks to rotation transformations only so as to not distend the model.
 
 <figure id="figure5">
 	<img src="/Animation/images/marvin.png" width="65%">
-	<figcaption>Figure 5 : Marvin et son squelette et l'animation de marvin</figcaption>
+	<figcaption>Figure 5 : Marvin's skeleton and the resulting animation</figcaption>
 </figure>
 
-L'animation est visible sur l'exemple interactif suivant : <a href="/Animation/marvin.html">Voir Marvin bouger</a>
+Animation can be visualized online : <a href="/Animation/marvin.html">Animation of marvin</a>
