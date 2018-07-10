@@ -8,6 +8,11 @@ permalink: /about.html
 <h3>Experience</h3>
 
 <img style="float:right;height:60px" src="/images/irit.png">
+<strong>PhD Student: Dynamic tesselation of scalar field</strong>
+<ul>
+</ul>
+<em>2018-2021 - IRIT, Toulouse, France</em>
+
 <strong>Internship: Automatic reconstruction of a jointed model</strong>
 <ul>
   <li>State of the art of implicit surfaces for animation purposes</li>
@@ -47,15 +52,15 @@ permalink: /about.html
 
 <h3>Education</h3>
 
-<img style="float:right;height:60px" src="/images/insa.png">
-<strong>INSA Toulouse</strong><br>
-Engineer's degree in critical embedded systems<br>
-<em>2015 - Toulouse, France</em>
-
 <img style="float:right;height:60px" src="/images/ups.jpg">
 <strong>Université Paul Sabatier</strong><br>
 Master's degree of computer graphics and image analysis<br>
 <em>2018 - Toulouse, France</em>
+
+<img style="float:right;height:60px" src="/images/insa.png">
+<strong>INSA Toulouse</strong><br>
+Engineer's degree in critical embedded systems<br>
+<em>2015 - Toulouse, France</em>
 
 <img style="float:right;height:60px" src="/images/linkoping.png">
 <strong>Linköpings universitet</strong><br>
