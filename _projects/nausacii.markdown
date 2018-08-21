@@ -176,6 +176,7 @@ Accordingly to these playtests, I made a working prototype in Javascript (with a
 
 <h2>Javascript Prototype and last iteration</h2>
 
+<div id="gamediv" style="position:relative;" >
 <button id="new" onclick="startGame();">New game</button><input type="range" style="width:50px" id="number_of_players" value="4" min="1" max="6" oninput="number_of_players_out.value = number_of_players.value"><output id="number_of_players_out">4</output> players
 <select id="difficulty">
 <option value="easy">Facile</option>
@@ -205,7 +206,7 @@ Se deplacer (1 <img src="../images/nausacii/water.png" width="15px">, 2 <img src
 	</div>
 </div>
 
-<div style="position:absolute;top:200px;left:520px;border:1px solid black" id="players">
+<div style="position:absolute;top:0px;left:-550px;width:450px;border:1px solid black;background-color:white;" id="players">
 	
 </div>
 
@@ -222,7 +223,7 @@ Se deplacer (1 <img src="../images/nausacii/water.png" width="15px">, 2 <img src
 	
 </div>
 
-<div style="position:absolute;top:570px;left:300px" id="directions">
+<div style="position:absolute;top:670px;left:450px" id="directions">
 	<button style="position:absolute; left:50px;" id="n" onclick="action('n')">↑</button>
 	<button style="position:absolute; top:35px;" id="ne" onclick="action('nw')">↖</button>
 	<button style="position:absolute; top:70px;" id="se" onclick="action('sw')">↙</button>
@@ -232,7 +233,8 @@ Se deplacer (1 <img src="../images/nausacii/water.png" width="15px">, 2 <img src
 	<button style="position:absolute; top:50px; left:50px;" id="cancel" onclick="action('cancel')">X</button>
 </div>
 
-<textarea id="log" rows="20" cols="57" style="position:absolute;top:0px;left:1150px" ></textarea>
+<textarea id="log" rows="20" cols="57" style="position:absolute;top:0px;left:780px" ></textarea>
+</div>
 <h3>Regles</h3>
 <ul>
 	<li>Rester sur une case fungi a la fin du tour : +1 <img src="../images/nausacii/chitine.png" width="15px">, perds le jeton recherche sur la tuile si détenu (une seule des deux ressources produites)</li>
@@ -459,7 +461,7 @@ class Player{
 		}
 		if(this.peuple.id == 1){
 			for(var k in players){
-				result += "<button id='move_"+k+"' onclick='moveGlobal("+k+")'><img src='../images/nausacii/pion_"+players[k].id+".png' height='15px'></button>";
+				result += "<button id='move_"+k+"' onclick='moveGlobal("+k+")'><img src='../images/nausacii/pion_"+players[k].id+".png' width='10px'></button>";
 			}
 			//result += "<button id='move_7' onclick='moveGlobal(7)'><img src='pion_nausicaa.png' height='15px'></button>";
 		}
@@ -474,8 +476,8 @@ class Player{
 		}
 		if(this.peuple.id == 5){
 			result += "<button id='exchange_seed' onclick='exchange(\"water\")'><img src='../images/nausacii/water.png' width='15px'></button>";
-			result += "<button id='exchange_seed' onclick='exchange(\"seed\")'><img src='../images/nausacii/seed.png' height='15px'></button>";
-			result += "<button id='exchange_rock' onclick='exchange(\"rock\")'><img src='../images/nausacii/rock.png' height='15px'></button>";
+			result += "<button id='exchange_seed' onclick='exchange(\"seed\")'><img src='../images/nausacii/seed.png' width='15px'></button>";
+			result += "<button id='exchange_rock' onclick='exchange(\"rock\")'><img src='../images/nausacii/rock.png' width='15px'></button>";
 		}
 		result += '<br>';
 		result += this.water + '/6 <img src="../images/nausacii/water.png" width="15px"> - '
