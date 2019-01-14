@@ -1,0 +1,405 @@
+---
+layout: post
+title:  "Triangulation and Fairing"
+date: 2018-01-12
+lang: eng
+---
+<script id="vertexShader" type="x-shader/x-vertex">
+varying vec3 vNormal;
+
+void main() {
+    vNormal = normal;
+    
+    gl_Position =   projectionMatrix * 
+                    modelViewMatrix * 
+                    vec4(position,1.0);
+}
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+varying vec3 vNormal;
+
+void main() {
+    gl_FragColor = vec4(vNormal.x*.5+.5,vNormal.y*.5+.5,vNormal.z*.5+.5,1.0);
+}
+</script>
+<script src="/triangulation/scripts/math.min.js"></script>
+<script src="/triangulation/scripts/three.min.js"></script>
+<script src="/triangulation/scripts/trackball.js"></script>
+<script src="/triangulation/scripts/generateLookups.js"></script>
+
+<h2>Triangulation and Fairing</h2>
+This work was made with THREE.js
+	
+	<input type="checkbox" checked=true autocomplete=off onchange="setWireframe(this.checked)" id="wireframe" value="wireframe"><label for="wireframe">Wireframe</label><br>
+	<div id="scene"></div>
+
+<script>
+    
+    /*global THREE, BSpline, Surface*/
+    var geometry = new THREE.SphereGeometry(1,32,16,0,Math.PI*2,0,Math.PI/2);
+    
+    var bordersGeometry = new THREE.Geometry();
+    
+    var wireframeBool = true;
+    
+    geometry.faceVertexUvs = [];
+    
+    var oldVertices = geometry.vertices; // { x, y, z}
+	var oldFaces = geometry.faces; // { a: oldVertex1, b: oldVertex2, c: oldVertex3 }
+
+	var edges = {}; // edge oldVertex1_oldVertex2 = { oldVertex1, oldVertex2, faces[]  }
+    var metaVertices = [];
+    
+	// Generate edges Lookup
+	generateLookups(oldVertices, oldFaces, metaVertices, edges);
+	
+	// Find borders
+	var borders = [];
+	
+	for(var k in edges){
+        var edge = edges[k];
+	    if(edge.faces.length == 1){
+	        borders.push(edge);
+	        bordersGeometry.vertices.push(
+            	edge.a,
+            	edge.b
+            );
+	    }
+	}
+	
+	var center = new THREE.Vector3();
+	var total = 0;
+	for(var k in geometry.vertices){
+		center.add(geometry.vertices[k]);
+		total++;
+	}
+	center.divideScalar(total);
+	
+	// Triangulate each border
+	var startingFaces = geometry.faces.length;
+ 	while(borders.length > 0){
+	    // Pick one border
+	    var currentBorder = [];
+	    var startHoleEdge = borders[0];
+	    var vertices = [];
+	    
+	    var currentEdge = startHoleEdge;
+	    currentBorder.push(currentEdge);
+	    var connectedEdges = metaVertices[currentEdge.aidx].edges;
+	    for(var ce in connectedEdges){
+	        if(borders.includes(connectedEdges[ce]) && startHoleEdge != connectedEdges[ce]){
+	            currentEdge = connectedEdges[ce];
+	            vertices.push(currentEdge.aidx);
+	            borders.splice( borders.indexOf(currentEdge), 1 );
+	            break;
+	        }
+	    }
+	    while(currentEdge != startHoleEdge){
+	        currentBorder.push(currentEdge);
+	        connectedEdges = metaVertices[currentEdge.aidx].edges;
+    	    for(var ce in connectedEdges){
+    	        if(borders.includes(connectedEdges[ce])){
+    	            currentEdge = connectedEdges[ce];
+    	            vertices.push(currentEdge.aidx);
+	                borders.splice( borders.indexOf(currentEdge), 1 );
+    	            break;
+    	        }
+    	    }
+	    }
+	    
+	    var handler = {
+		    get: function(target, name) {
+		        if(name < 0)
+		        	return target[target.length + Number(name)];
+		        else if(name >= target.length)
+		        	return target[ name - target.length];
+		        else
+		        	return target[name];
+		    }
+		};
+		var accessor = new Proxy(vertices, handler);
+	    
+	    //Treat current border
+	    var newVertices = [];
+	    var newFaces = [];
+	    var max = 0;
+	    
+	    var dotProductsArray = [];
+	    var average_size = 0;
+	    var NbEdges = 0;
+    	//Should not recalculate each time
+    	for(var v=0;v<vertices.length;v++){
+    		let v0 = accessor[v-1];
+    		let v1 = accessor[v];
+    		let v2 = accessor[v+1];
+    		var e1 = new THREE.Vector3();
+    		var e2 = new THREE.Vector3();
+    		e1.subVectors(geometry.vertices[v0],geometry.vertices[v1]).normalize();
+    		e2.subVectors(geometry.vertices[v2],geometry.vertices[v1]).normalize();
+    		average_size += e1.length();
+    		NbEdges++;
+    		var dotProduct = Math.abs(Math.acos(e1.dot(e2)));
+    		
+    		var orientation = new THREE.Vector3();
+    		var crossP = new THREE.Vector3().crossVectors(e1,e2);
+    		orientation = orientation.subVectors(center,geometry.vertices[v1]).dot(crossP);
+    		
+    		if(Math.abs(orientation) > 0.01){
+    			if(orientation < 0)
+    				dotProduct += Math.PI;
+    		}
+    		
+    		dotProductsArray.push({vertex:accessor[v],idx:v,angle:dotProduct});
+    	}
+    	dotProductsArray.sort((a,b)=> a.angle - b.angle);
+    	var deleted = [];
+	    average_size /= NbEdges;
+	    
+	    while(vertices.length > 2 && max < 250){
+	    	max++;
+	    	
+	    	var currentAngle = dotProductsArray[0].angle;
+	    	var currentVertex = dotProductsArray[0].idx;
+	    	deleted.push(dotProductsArray.splice(0,1)[0]);
+	    	var needsUpdate = [];
+	    	
+	    	if( currentAngle < 1.3 ){
+	    		geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],accessor[currentVertex+1]));
+	    		needsUpdate.push(accessor[currentVertex-1],accessor[currentVertex+1]);
+	    		vertices.splice(currentVertex, 1);
+	    	}
+	    	else if ( currentAngle < 2.35 ){
+	    		var v0 = geometry.vertices[accessor[currentVertex-1]];
+	    		var v1 = geometry.vertices[accessor[currentVertex]];
+	    		var v2 = geometry.vertices[accessor[currentVertex+1]];
+	    		
+	    		var vDistance = new THREE.Vector3();
+	    		vDistance.subVectors(v0,v2);
+	    		var distance = vDistance.length();
+	    		
+	    		if(distance < average_size/2){
+	    			geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],accessor[currentVertex+1]));
+	    			needsUpdate.push(accessor[currentVertex-1],accessor[currentVertex+1]);
+	    			vertices.splice(currentVertex, 1);
+	    		}
+	    		else{
+		    		var vect0 = new THREE.Vector3();
+		    		vect0.subVectors(v0,v1);
+		    		var vect1 = new THREE.Vector3();
+		    		vect1.subVectors(v2,v1);
+		    		var newVertex = new THREE.Vector3();
+		    		var size = (vect0.length() + vect1.length()) / 2;
+		    		newVertex.lerpVectors(vect1,vect0,0.5).normalize();
+		    		newVertex.multiplyScalar(size);
+		    		newVertex.addVectors(v1,newVertex);
+		    		var newIdx = geometry.vertices.length;
+		    		geometry.vertices.push(newVertex);
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],newIdx));
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex],accessor[currentVertex+1],newIdx));
+	    			needsUpdate.push(accessor[currentVertex-1],newIdx,accessor[currentVertex+1]);
+		    		vertices.splice(currentVertex, 1, newIdx);
+	    		}
+	    	}
+	    	else{
+	    		var v0 = geometry.vertices[accessor[currentVertex-1]];
+	    		var v1 = geometry.vertices[accessor[currentVertex]];
+	    		var v2 = geometry.vertices[accessor[currentVertex+1]];
+	    		
+	    		var vect0 = new THREE.Vector3();
+	    		vect0.subVectors(v0,v1);
+	    		var vect1 = new THREE.Vector3();
+	    		vect1.subVectors(v2,v1);
+	    		
+	    		var newVertex0 = new THREE.Vector3();
+	    		var newVertex1 = new THREE.Vector3();
+	    		var size0 = (vect0.length()*0.67 + vect1.length()*0.33);
+	    		var size1 = (vect0.length()*0.33 + vect1.length()*0.67);
+	    		newVertex0.lerpVectors(vect1,vect0,0.67).normalize();
+	    		newVertex0.multiplyScalar(size0);
+	    		newVertex0.addVectors(v1,newVertex0);
+	    		newVertex1.lerpVectors(vect1,vect0,0.33).normalize();
+	    		newVertex1.multiplyScalar(size1);
+	    		newVertex1.addVectors(v1,newVertex1);
+	    		
+	    		var vDistance = new THREE.Vector3();
+	    		vDistance.subVectors(v0,newVertex0);
+	    		var dist0 = vDistance.length();
+	    		vDistance.subVectors(newVertex0,newVertex1);
+	    		var dist1 = vDistance.length();
+	    		vDistance.subVectors(newVertex1,v2);
+	    		var dist2 = vDistance.length();
+	    		
+	    		if ( dist0 + dist1 + dist2 < average_size/2 ){
+	    			geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],accessor[currentVertex+1]));
+	    			needsUpdate.push(accessor[currentVertex-1],accessor[currentVertex+1]);
+	    			vertices.splice(currentVertex, 1);
+	    		}
+	    		else if ( dist0 < average_size/4 || dist1 < average_size/4 || dist2 < average_size/4 ){
+	    			var vect0 = new THREE.Vector3();
+		    		vect0.subVectors(v0,v1);
+		    		var vect1 = new THREE.Vector3();
+		    		vect1.subVectors(v2,v1);
+		    		var newVertex = new THREE.Vector3();
+		    		var size = (vect0.length() + vect1.length()) / 4;
+		    		newVertex.lerpVectors(vect1,vect0,0.5).normalize();
+		    		newVertex.multiplyScalar(size);
+		    		newVertex.addVectors(v1,newVertex);
+		    		var newIdx = geometry.vertices.length;
+		    		geometry.vertices.push(newVertex);
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],newIdx));
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex],accessor[currentVertex+1],newIdx));
+	    			needsUpdate.push(accessor[currentVertex-1],newIdx,accessor[currentVertex+1]);
+		    		vertices.splice(currentVertex, 1, newIdx);
+	    		}
+	    		else{
+	    			var newIdx = geometry.vertices.length;
+		    		geometry.vertices.push(newVertex0);
+		    		geometry.vertices.push(newVertex1);
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex-1],accessor[currentVertex],newIdx));
+		    		geometry.faces.push(new THREE.Face3(newIdx,accessor[currentVertex],newIdx+1));
+		    		geometry.faces.push(new THREE.Face3(accessor[currentVertex],accessor[currentVertex+1],newIdx+1));
+	    			needsUpdate.push(accessor[currentVertex-1],newIdx,newIdx+1,accessor[currentVertex+1]);
+		    		vertices.splice(currentVertex, 1, newIdx, newIdx+1);
+	    		}
+	    	}
+	    	//update angles
+	    	for(var v=0;v<vertices.length;v++){
+	    		let currentIdx = accessor[v];
+	    		let toUpdate = dotProductsArray.find((e) => {return e.vertex == currentIdx;});
+	    		if(needsUpdate.includes(currentIdx)){
+	    			
+	    			let v0 = accessor[v-1];
+		    		let v1 = accessor[v];
+		    		let v2 = accessor[v+1];
+		    		var e1 = new THREE.Vector3();
+		    		var e2 = new THREE.Vector3();
+		    		e1.subVectors(geometry.vertices[v0],geometry.vertices[v1]).normalize();
+		    		e2.subVectors(geometry.vertices[v2],geometry.vertices[v1]).normalize();
+		    		var dotProduct = Math.abs(Math.acos(e1.dot(e2)));
+		    		
+		    		var orientation = new THREE.Vector3();
+		    		var crossP = new THREE.Vector3().crossVectors(e1,e2);
+		    		orientation = orientation.subVectors(center,geometry.vertices[v1]).dot(crossP);
+		    		
+		    		if(Math.abs(orientation) > 0.01){
+		    			if(orientation < 0)
+			    				dotProduct += Math.PI;
+		    		}
+		    		
+		    		if(toUpdate){
+		    			toUpdate.angle = dotProduct;
+		    		}
+		    		else {
+		    			dotProductsArray.push({vertex:accessor[v],idx:v,angle:dotProduct});
+		    		}
+	    		}
+	    		if(toUpdate){
+	    			toUpdate.idx = v;
+	    		}
+	    	}
+    		dotProductsArray.sort((a,b)=> a.angle - b.angle);
+	    	
+	    	//geometry.computeVertexNormals();
+	    }
+	    
+	    //Compute new normals
+ 	}
+	var endingFaces = geometry.faces.length;
+    
+    var scene = new THREE.Scene();
+
+    var renderer = new THREE.WebGLRenderer();
+
+    renderer.setSize(700, 400);
+    
+    var domElem = document.getElementById("scene").appendChild(renderer.domElement);
+    
+    var camera = new THREE.PerspectiveCamera(40, 700 / 400, 0.1, 15000);
+    camera.position.set(0, 0, 4);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    
+    var material = new THREE.ShaderMaterial({
+    	vertexShader: document.getElementById( 'vertexShader' ).textContent,
+    	fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+    });
+    
+    var object = new THREE.Mesh( geometry, material );
+    
+    var geo = new THREE.WireframeGeometry( geometry); // or WireframeGeometry
+    var mat = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2} );
+    var wireframe = new THREE.LineSegments( geo, mat );
+    
+    var bordersMat = new THREE.LineBasicMaterial( { linewidth: 5} );
+    bordersMat.color.setHex( 0xff0000 );
+    var bordersObj = new THREE.LineSegments( bordersGeometry, bordersMat );
+    
+   scene.add(object);
+   
+   scene.add(bordersObj);
+   
+    setWireframe(wireframeBool);
+        
+    var camControls = new THREE.TrackballControls( camera, domElem );
+	camControls.rotateSpeed = 5.0;
+	camControls.zoomSpeed = 1.2;
+	camControls.panSpeed = 0.8;
+	camControls.noZoom = false;
+	camControls.noPan = false;
+	camControls.staticMoving = true;
+	camControls.dynamicDampingFactor = 0.3;
+	camControls.keys = [ 65, 83, 68 ];
+	camControls.addEventListener( 'change', render );
+    
+    function setWireframe(bool){
+        wireframeBool = bool;
+        if(wireframeBool){
+            scene.remove(wireframe);
+            scene.add( wireframe );
+        }
+        else
+            scene.remove(wireframe);
+    }
+    
+    var savsFaces = geometry.faces;
+    
+    var compteur = startingFaces;
+    var notEveryDay = 0;
+    function redraw(){
+    	notEveryDay++;
+    	if(notEveryDay == 10){
+            notEveryDay = 0;
+            
+	        compteur++;
+	        if(compteur > endingFaces)
+	        	compteur = startingFaces;
+	        	
+	        geometry.faces = savsFaces.slice();
+	        geometry.faces = geometry.faces.splice(0,compteur);
+			geometry.elementsNeedUpdate = true;
+			
+			scene.remove(wireframe);
+			
+			var geo = new THREE.WireframeGeometry( geometry); // or WireframeGeometry
+	        var mat = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2} );
+	        wireframe = new THREE.LineSegments( geo, mat );
+	        
+	        if(wireframeBool){
+	            scene.add( wireframe );
+	        }
+    	}
+    }
+    
+    
+    var clock = new THREE.Clock();
+    
+    (function animloop(){
+      requestAnimationFrame(animloop);
+      camControls.update(clock.getDelta());
+      redraw();
+      render();
+    })();
+    
+    function render(){
+		renderer.render( scene, camera );
+    }
+</script>
