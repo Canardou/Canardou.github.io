@@ -10,6 +10,16 @@ permalink: /about.html
 <img style="float:right;height:60px" src="/images/irit.png">
 <strong>PhD Student: Dynamic tesselation of scalar field</strong>
 <ul>
+  <li>Robust mesh generation and optimization for Implicit Skinning</li>
+  <li>Multiple seminars, a poster at the IRIT and a presentation and paper at the french conference AFIG</li>
+  <li>Teaching</li>
+    <ul>
+      <li><em>Full course</em></li>
+      UPSSITECH: Image synthesis (Blender, Matlab) - Master 1
+      <li><em>Practical courses and projects (L2 to M1)</em></li>
+      Paul Sabatier University: Advanced C++, Data structure, Computer graphics, Multithreading, Interactive systems.
+    </ul>
+  <li><em>C++, Javascript, Matlab</em></li>
 </ul>
 <em>2018-2021 - IRIT, Toulouse, France</em>
 
@@ -17,6 +27,7 @@ permalink: /about.html
 <ul>
   <li>State of the art of implicit surfaces for animation purposes</li>
   <li>Improve robustness and automation of the process</li>
+  <li><em>C++, Matlab</em></li>
 </ul>
 <em>2018 - IRIT, Toulouse, France</em>
 
