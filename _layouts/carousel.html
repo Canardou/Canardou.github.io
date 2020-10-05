@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {% include head.html %}
+  <link rel="stylesheet" href="{{ "/assets/css/flexslider.css" | prepend: site.baseurl }}">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <script src="{{ "/assets/js/jquery.flexslider-min.js" | prepend: site.baseurl }}"></script>
+  <script>
+    $(window).load(function() {
+      // The slider being synced must be initialized first
+      $('#carousel').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        itemWidth: 200,
+        itemMargin: 5,
+        asNavFor: '#slider'
+      });
+    
+      $('#slider').flexslider({
+        animation: "slide",
+        controlNav: false,
+        animationLoop: false,
+        slideshow: false,
+        sync: "#carousel"
+      });
+    });
+  </script>
+
+  <body>
+    {% include navigation.html %}
+    
+    <section>
+      <article>
+        {{ content }}
+      </article>
+    </section>
+    {% include footer.html %}
+  </body>
+
+</html>
