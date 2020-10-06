@@ -9,7 +9,7 @@ lang: eng
     <ul class="slides"> 
 {% for image in site.static_files %}{% if image.path contains 'images/sketches' %}
     <li>
-        <img src="{{ site.baseurl }}{{ image.path }}" style="max-height:500px;width: auto;" alt="image" />
+        <img src="{{ site.baseurl }}{{ image.path }}" alt="image" />
     </li>
 {% endif %}{% endfor %}
     </ul>
@@ -19,7 +19,7 @@ lang: eng
     <ul class="slides"> 
 {% for image in site.static_files %}{% if image.path contains 'images/sketches' %}
     <li>
-        <img src="{{ site.baseurl }}{{ image.path }}" style="max-height:150px;object-fit: cover;" alt="image" />
+        <img src="{{ site.baseurl }}{{ image.path }}" alt="image" />
     </li>
 {% endif %}{% endfor %}
     </ul>

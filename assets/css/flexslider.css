@@ -49,8 +49,11 @@
   -webkit-backface-visibility: hidden;
 }
 .flexslider .slides img {
-  width: 100%;
   display: block;
+}
+#slider img{
+  max-height:500px;
+  width: auto;
 }
 .flexslider .slides:after {
   content: "\0020";
@@ -90,7 +93,7 @@ html[xmlns] .flexslider .slides {
   zoom: 1;
 }
 .flexslider .slides img {
-  height: auto;
+  height:auto;
   -moz-user-select: none;
 }
 .flex-viewport {
@@ -109,8 +112,10 @@ html[xmlns] .flexslider .slides {
     max-height: none;
   }
 }
-.carousel li {
-  margin-right: 5px;
+#carousel img{
+  height:100px;
+  width:150px;
+  object-fit: cover;
 }
 .flex-direction-nav {
   *height: 0;
@@ -124,7 +129,6 @@ html[xmlns] .flexslider .slides {
   position: absolute;
   top: 50%;
   z-index: 10;
-  overflow: hidden;
   opacity: 0;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.8);
@@ -139,12 +143,12 @@ html[xmlns] .flexslider .slides {
   font-family: "flexslider-icon";
   font-size: 40px;
   display: inline-block;
-  content: '<';
+  content: '\f001';
   color: rgba(0, 0, 0, 0.8);
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
 }
 .flex-direction-nav a.flex-next:before {
-  content: '>';
+  content: '\f002';
 }
 .flex-direction-nav .flex-prev {
   left: -50px;
