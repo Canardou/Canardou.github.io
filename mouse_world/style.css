@@ -1,0 +1,176 @@
+body {
+  font-family:"Viner Hand ITC";
+	line-height: 1;
+	font-size: 10px;
+	background: rgb(204,204,204);
+}
+
+@media print{
+  page {
+    size: A5;
+  }
+}
+@media screen{
+  page {
+    width:21.0cm;
+    height:14.8cm;
+  }
+}
+
+page {
+  background: white;
+  display: block;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+  margin: 1cm auto;
+  box-sizing: border-box;
+  padding: 0.5cm;
+}
+
+page[layout="continue"] {
+  width: 21cm;
+  height: auto;
+}
+
+@media print {
+  body, page {
+    margin: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+}
+
+h1{
+  font-size: 14px;
+  text-align: center;
+}
+
+h2{
+  font-size: 11px;
+  text-align: center;
+}
+
+h3{
+  font-weight: bold;
+  margin-bottom: 0;
+  font-size: 110%;
+}
+
+h4{
+  font-style: italic;
+  margin: 0;
+  font-size: 100%;
+}
+
+p {
+  margin: 0 0 0 10px;
+  text-align: justify;
+}
+
+section{
+  column-count:3;
+  column-rule: 1px solid black;
+  column-gap: 40px;
+}
+
+article{
+  break-after: column;
+  height:13cm;
+}
+
+ul{
+  list-style-type: none;
+}
+
+.competences>li:before,
+.competences>ul>li:before,
+.bonus>li:before,
+.bonus>center>li:before,
+.bonus>ul>li:before{
+  font-family: Segoe UI Symbol;
+  content : "\1F315";
+  margin-right: 4px;
+}
+
+li.taken:before{
+  font-family: Segoe UI Symbol;
+  content : "\1F311";
+}
+
+.competences {
+  text-align: justify;
+  list-style-type: none;
+  margin-bottom: 12px;
+  padding-left: 0px;
+}
+
+.leftList {
+  text-align: justify;
+  list-style-type: none;
+  margin-bottom: 5px;
+  margin-top: 0px;
+  padding-left: 0px;
+}
+
+.leftList>li {
+  margin-top: 0px;
+  padding-left: 0px;
+}
+
+.competences>li {
+  margin-top: 5px;
+  padding-left: 0px;
+}
+
+.competences>ul {
+  list-style-type: none;
+  padding-left: 12px;
+}
+
+.leftRightList {
+  margin-top: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.leftRightList>li {
+  list-style-type: none;
+	float: left;
+}
+
+.leftRightList>ul {
+  font-family:"Mistral";
+  list-style-type: none;
+	text-align: right;
+}
+
+.bonus {
+  margin-top: 0;
+  padding: 0;
+}
+
+.bonus>li {
+  list-style-type: none;
+	float: left;
+}
+
+.bonus>ul {
+  list-style-type: none;
+	text-align: right;
+}
+
+table {
+  margin-left:auto; 
+  margin-right:auto;
+}
+
+.text-muted{
+  color: #999;
+}
+
+td {
+  text-align: center;
+}
+
+.unstyled{
+  font-family: Segoe UI Symbol;
+}
