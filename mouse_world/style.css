@@ -87,13 +87,13 @@ ul{
 .bonus>center>li:before,
 .bonus>ul>li:before{
   font-family: Segoe UI Symbol;
-  content : "\1F315";
+  content : "\25CB";
   margin-right: 4px;
 }
 
 li.taken:before{
   font-family: Segoe UI Symbol;
-  content : "\1F311";
+  content : "\25CF";
 }
 
 .competences {
