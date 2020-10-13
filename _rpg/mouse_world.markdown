@@ -47,3 +47,5 @@ lang: fr
 <p>Le chapitre offre, comme son nom l'indique, des outils pour la maîtresse de cérémonie. Un petit résumé des objets et armure disponible est proposé. De même les actions et les conditions (et leur malus associés) sont repris. Une liste non exhaustive des animaux est proposé (On rappelle que la maîtresse de cérémonie ne lance jamais de dés, quand un animal dispose d'une armure, considérer que les dégâts sont réduits d'autant que l'armure).</p>
 
 <p>La dernière partie porte sur les dangers possibles. Lorsqu'une action vous dit que la souris s'expose à un danger, si vous n'avez pas d'idée précise, vous pouvez lancer 1D6 et regarder le résultat dans la liste et piocher ce qui vous arrange le plus. Les adversaires ou animaux devraient toujours avoir une action précise dans le cas d'une exposition au danger face à eux.</p>
+
+<p>On note que le statut <b>Blessée</b> est obtenu immédiatemment quand une souris passe en dessous de 3 points de vie (coche une des trois dernières cases de sa santé)</p>
