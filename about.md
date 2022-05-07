@@ -7,21 +7,35 @@ permalink: /about.html
 
 <h3>Experience</h3>
 
+<img style="float:right;height:60px" src="/images/Oclock.png">
+<strong>Fullstack JavaScript Teacher</strong>
+<ul>
+  <li>Technology intelligence</li>
+  <li>Teaching</li>
+</ul>
+<em>2021-Now - O'Clock, Remote, France</em>
+
 <img style="float:right;height:60px" src="/images/irit.png">
 <strong>PhD Student: Dynamic tesselation of scalar field</strong>
 <ul>
   <li>Robust mesh generation and optimization for Implicit Skinning</li>
   <li>Multiple seminars, a poster at the IRIT and a presentation and paper at the french conference AFIG</li>
-  <li>Teaching</li>
+  <li>Teaching
     <ul>
       <li><em>Full course</em></li>
       UPSSITECH: Image synthesis (Blender, Matlab) - Master 1
       <li><em>Practical courses and projects (L2 to M1)</em></li>
       Paul Sabatier University: Advanced C++, Data structure, Computer graphics, Multithreading, Interactive systems.
     </ul>
+  </li>
   <li><em>C++, Javascript, Matlab</em></li>
+  <li>Publication
+    <ul>
+      <a href="https://doi.org/10.1016/j.cag.2021.10.018">2021 - Automatic shape adjustment at joints for the implicit skinning</a>
+    </ul>
+  </li>
 </ul>
-<em>2018-2021 - IRIT, Toulouse, France</em>
+<em>2018-2022 - IRIT, Toulouse, France</em>
 
 <strong>Internship: Automatic reconstruction of a jointed model</strong>
 <ul>
